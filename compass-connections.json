@@ -1,0 +1,27 @@
+{
+  "type": "Compass Connections",
+  "version": {
+    "$numberInt": "1"
+  },
+  "connections": [
+    {
+      "id": "f92f71d8-022c-4070-a3c7-866803c2a059",
+      "lastUsed": {
+        "$date": {
+          "$numberLong": "1752908821042"
+        }
+      },
+      "favorite": {
+        "name": "InterviewBuddy",
+        "color": "color2"
+      },
+      "savedConnectionType": "recent",
+      "connectionOptions": {
+        "connectionString": "mongodb://localhost:27017/InterviewBuddy",
+        "oidc": {
+          "serializedState": "eyJvaWRjUGx1Z2luU3RhdGVWZXJzaW9uIjoxLCJzdGF0ZSI6W119"
+        }
+      }
+    }
+  ]
+}
