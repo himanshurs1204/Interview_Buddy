@@ -1,16 +1,17 @@
 # Interview Buddy 🎯
 
-**Interview Buddy** is a full-stack MERN (MongoDB, Express.js, React.js, Node.js) web application that uses the **Gemini AI API** to generate personalized technical interview questions. It is designed to help job seekers streamline their preparation through realistic, AI-curated question sets, tailored to their skills and preferences.
+**Interview Buddy** is a full-stack MERN (MongoDB, Express.js, React.js, Node.js) web application that generates personalized technical interview questions to help job seekers streamline their preparation through realistic, dynamic question sets.
 
 ---
 
 ## 🚀 Features
 
-- 💬 **AI-Powered Questions**: Uses Gemini API to generate personalized technical interview questions.
-- 🔐 **Secure Authentication**: User login/registration with hashed passwords (bcrypt.js) and JWT-based session management.
-- 📊 **Question History**: View previously generated sessions and track your preparation.
-- 🌐 **RESTful API Backend**: Built with Node.js and Express.js, connected to MongoDB.
-- 💻 **Clean & Responsive UI**: Built with React.js, designed for smooth navigation and usability.
+✨ **Dynamic Question Generation**  
+🔐 **Secure User Authentication**  
+🧾 **Session Tracking with History**  
+💻 **Responsive UI with React.js & Tailwind CSS**  
+🌐 **RESTful API Architecture**  
+🗃️ **Persistent Storage with MongoDB**
 
 ---
 
@@ -24,17 +25,26 @@
 
 ---
 
+## 🎥 Demo (Video/GIF)
+
+> Add your demo video or screen recording in `.gif` or `.mp4` format inside the `assets/` folder. Then, update the link below accordingly.
+
+![Demo](assets/demo.gif)
+
+_Or embed a YouTube link:_
+
+[▶️ Watch the Demo on YouTube](https://www.youtube.com/watch?v=your-demo-video-id)
+
+---
+
 ## 🛠️ Tech Stack
 
-| Tech        | Description                                |
-|-------------|--------------------------------------------|
-| React.js    | Frontend library                           |
-| Node.js     | Backend runtime environment                |
-| Express.js  | REST API framework                         |
-| MongoDB     | NoSQL database                             |
-| Gemini API  | AI-powered interview question generation   |
-| bcrypt.js   | Password hashing                           |
-| JWT         | Token-based authentication                 |
+| Technology     | Description              | Logo |
+|----------------|--------------------------|------|
+| ![MongoDB](https://img.shields.io/badge/-MongoDB-4EA94B?logo=mongodb&logoColor=white&style=for-the-badge)     | NoSQL Database           | 🟢 |
+| ![Express.js](https://img.shields.io/badge/-Express.js-000000?logo=express&logoColor=white&style=for-the-badge) | Backend Framework        | ⚙️ |
+| ![React](https://img.shields.io/badge/-React.js-61DAFB?logo=react&logoColor=white&style=for-the-badge)        | Frontend Library         | ⚛️ |
+| ![Node.js](https://img.shields.io/badge/-Node.js-339933?logo=node.js&logoColor=white&style=for-the-badge)     | Runtime Environment      | 🟩 |
 
 ---
 
@@ -56,30 +66,28 @@ InterviewBuddy/
 
 ## ⚙️ Setup Instructions
 
-### Prerequisites
+### 🔧 Prerequisites
 
-- Node.js (v16+ recommended)
-- MongoDB (local or cloud via Atlas)
-- Gemini AI API key (from Google AI)
+- 📦 Node.js (v16+ recommended)  
+- 🛢️ MongoDB (local or cloud via Atlas)
 
-### 1. Clone the repository
+### 📝 1. Clone the repository
 
 ```bash
 git clone https://github.com/yourusername/interview-buddy.git
 cd interview-buddy
 ```
 
-### 2. Setup Environment Variables
+### 🔐 2. Setup Environment Variables
 
 Create a `.env` file in the `server/` directory with the following:
 
 ```
 MONGO_URI=your_mongo_connection_string
 JWT_SECRET=your_jwt_secret_key
-GEMINI_API_KEY=your_gemini_api_key
 ```
 
-### 3. Install Dependencies
+### 📥 3. Install Dependencies
 
 **Backend:**
 
@@ -95,7 +103,7 @@ cd ../client
 npm install
 ```
 
-### 4. Run the Application
+### ▶️ 4. Run the Application
 
 ```bash
 # Terminal 1: Backend
@@ -104,55 +112,40 @@ npm start
 
 # Terminal 2: Frontend
 cd client
-npm start
+npm run dev
 ```
 
-The app will run at: `http://localhost:3000`
+The app will run at: `http://localhost:5173`
 
 ---
 
-## 🧠 How It Works
+## 💡 Core Highlights
 
-1. **User Signup/Login** → Authenticated using JWT & bcrypt.js.
-2. **Generate Questions** → Sends a prompt to Gemini API.
-3. **Store Sessions** → MongoDB stores user sessions and generated question sets.
-4. **Review Past Sessions** → Users can view their previous interactions.
+✨ Built with the modern MERN stack:  
+- ⚛️ **React.js** for a fast, interactive UI  
+- ⚙️ **Express.js** + 🟩 **Node.js** for scalable backend APIs  
+- 🟢 **MongoDB** for reliable data storage  
 
----
-
-## 🛡️ Security Highlights
-
-- Passwords hashed using `bcrypt.js`.
-- JWT-based token auth for stateless and secure login.
-- Protected API routes for authenticated access only.
+🔁 Modular structure and clean architecture make the project easily extensible.  
+📈 Ideal for showcasing real-world full-stack development skills.
 
 ---
 
-## 📌 Future Enhancements
+## 🔗 Live Preview
 
-- 📅 Add scheduling feature for mock interviews.
-- 📈 Analytics dashboard for preparation trends.
-- 📁 Resume upload and smart analysis.
+🌍 [**Click here to view the live demo**](https://your-live-link-here.com)
 
 ---
 
 ## 🤝 Contributing
 
-Feel free to fork the project and submit pull requests or suggestions. Contributions are welcome!
+💡 Have suggestions or improvements?  
+Feel free to fork the project and submit pull requests. Contributions are always welcome!
 
 ---
 
 ## 📄 License
 
-This project is licensed under the MIT License.
-
----
-
-## 🙌 Acknowledgments
-
-- [Google Gemini API](https://ai.google.dev/)
-- [MongoDB](https://www.mongodb.com/)
-- [React.js](https://reactjs.org/)
-- [Node.js](https://nodejs.org/)
+📝 This project is licensed under the **MIT License**.
 
 ---
