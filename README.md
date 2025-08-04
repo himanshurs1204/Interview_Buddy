@@ -27,25 +27,27 @@
 
 ## 🎥 Demo (Video/GIF)
 
-> Add your demo video or screen recording in `.gif` or `.mp4` format inside the `assets/` folder. Then, update the link below accordingly.
+>  demo video or screen recording in `.gif` or `.mp4` format inside the `assets/` folder. Then, update the link below accordingly.
 
 ![Demo](assets/demo.gif)
-
-_Or embed a YouTube link:_
-
-[▶️ Watch the Demo on YouTube](https://www.youtube.com/watch?v=your-demo-video-id)
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Technology     | Description              | Logo |
-|----------------|--------------------------|------|
-| ![MongoDB](https://img.shields.io/badge/-MongoDB-4EA94B?logo=mongodb&logoColor=white&style=for-the-badge)     | NoSQL Database           | 🟢 |
-| ![Express.js](https://img.shields.io/badge/-Express.js-000000?logo=express&logoColor=white&style=for-the-badge) | Backend Framework        | ⚙️ |
-| ![React](https://img.shields.io/badge/-React.js-61DAFB?logo=react&logoColor=white&style=for-the-badge)        | Frontend Library         | ⚛️ |
-| ![Node.js](https://img.shields.io/badge/-Node.js-339933?logo=node.js&logoColor=white&style=for-the-badge)     | Runtime Environment      | 🟩 |
+This project is built using the MERN stack:
 
+- ![MongoDB](https://img.shields.io/badge/-MongoDB-4EA94B?logo=mongodb&logoColor=white&style=for-the-badge)  
+  **MongoDB** – NoSQL Database 🟢
+
+- ![Express.js](https://img.shields.io/badge/-Express.js-000000?logo=express&logoColor=white&style=for-the-badge)  
+  **Express.js** – Backend Framework ⚙️
+
+- ![React](https://img.shields.io/badge/-React.js-61DAFB?logo=react&logoColor=white&style=for-the-badge)  
+  **React.js** – Frontend Library ⚛️
+
+- ![Node.js](https://img.shields.io/badge/-Node.js-339933?logo=node.js&logoColor=white&style=for-the-badge)  
+  **Node.js** – Runtime Environment 🟩
 ---
 
 ## 📂 Project Structure
