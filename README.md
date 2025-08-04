@@ -76,7 +76,7 @@ InterviewBuddy/
 ### 📝 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/interview-buddy.git
+git clone https://github.com/himanshurs1204/Interview_Buddy.git
 cd interview-buddy
 ```
 
@@ -135,7 +135,7 @@ The app will run at: `http://localhost:5173`
 
 ## 🔗 Live Preview
 
-🌍 [**Click here to view the live demo**](https://your-live-link-here.com)
+🌍 [**Click here to view the live demo**](https://interview-buddy-iv31.vercel.app/)
 
 ---
 
@@ -143,11 +143,4 @@ The app will run at: `http://localhost:5173`
 
 💡 Have suggestions or improvements?  
 Feel free to fork the project and submit pull requests. Contributions are always welcome!
-
----
-
-## 📄 License
-
-📝 This project is licensed under the **MIT License**.
-
 ---
