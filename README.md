@@ -17,9 +17,14 @@
 
 ## 📸 Preview
 
-| Login Page                     | Dashboard with Generated Questions     |
-|-------------------------------|----------------------------------------|
-| ![Login Page](screenshots/login.jpg) | ![Dashboard](screenshots/Dashboard.jpg) |
+### 🔐 Login Page  
+![Login Page](screenshots/login.jpg)
+
+---
+
+### 🧠 Dashboard with Generated Questions  
+![Dashboard](screenshots/Dashboard.jpg)
+
 ---
 
 ## 🎥 Demo (Video/GIF)
