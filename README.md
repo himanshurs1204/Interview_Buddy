@@ -17,11 +17,13 @@
 
 ## 📸 Preview
 
-| Login Page                     | Dashboard with Generated Questions     |
-|-------------------------------|----------------------------------------|
-| ![Login Page](screenshots/login.png) | ![Dashboard](screenshots/dashboard.png) |
+### 🔐 Login Page  
+![Login Page](screenshots/login.jpg)
 
-> Add your screenshots to a `/screenshots` folder and update the file paths above accordingly.
+---
+
+### 🧠 Dashboard with Generated Questions  
+![Dashboard](screenshots/Dashboard.jpg)
 
 ---
 
@@ -129,7 +131,6 @@ The app will run at: `http://localhost:5173`
 - 🟢 **MongoDB** for reliable data storage  
 
 🔁 Modular structure and clean architecture make the project easily extensible.  
-📈 Ideal for showcasing real-world full-stack development skills.
 
 ---
 
