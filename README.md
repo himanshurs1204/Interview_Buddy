@@ -27,13 +27,13 @@
 
 ---
 
-## 🎥 Demo (Video/GIF)
+<!-- ## 🎥 Demo (Video/GIF)
 
 >  demo video or screen recording in `.gif` or `.mp4` format inside the `assets/` folder. Then, update the link below accordingly.
 
 ![Demo](assets/demo.gif)
 
----
+--- -->
 
 ## 🛠️ Tech Stack
 
