@@ -1,5 +1,5 @@
 // require('dotenv').config();
-export const BASE_URL = "http://localhost:8000";
+export const BASE_URL = "https://interview-buddy-jcz5.onrender.com/";
 export const API_PATHS = {
     AUTH: {
         REGISTER: "/api/auth/register", // Signup
