@@ -75,7 +75,7 @@ const generateWithGemini = async (
   systemInstruction = "You are an expert interview assistant. Respond in JSON format only.",
 ) => {
   const response = await genAI.models.generateContent({
-    model: "gemini-2.0-flash",
+    model: "gemini-3.8-flash",
     contents: [{ role: "user", parts: [{ text: prompt }] }],
     config: {
       systemInstruction: systemInstruction,
