@@ -4,6 +4,7 @@ import Input from '../../components/inputs/Input';
 import SpinnerLoader from '../../components/loader/SpinnerLoader';
 import axiosInstance from './../../utils/axiosInstance';
 import { API_PATHS } from '../../utils/apiPath';
+import { toast } from 'react-hot-toast';
 
 const CreateSessionForm = () => {
     const [sessionMode, setSessionMode] = useState('role');
@@ -91,7 +92,9 @@ const CreateSessionForm = () => {
             }
 
             if (!Array.isArray(generatedQuestions) || generatedQuestions.length === 0) {
-                setError('The AI could not generate questions. Please try again with different details.');
+                const message = 'The AI could not generate questions. Please try again with different details.';
+                setError(message);
+                toast.error(message);
                 return;
             }
 
@@ -109,11 +112,9 @@ const CreateSessionForm = () => {
                 navigate(`/interview-prep/${response.data?.session?._id}`)
             }
         } catch (error) {
-            if (error.response && error.response.data.message) {
-                setError(error.response.data.message)
-            } else {
-                setError('Something went wrong. Please try again.');
-            }
+            const message = error.response?.data?.message || 'Something went wrong. Please try again.';
+            setError(message);
+            toast.error(message);
         } finally {
             setIsLoading(false)
         }

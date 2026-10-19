@@ -10,50 +10,71 @@ const {
 const { conceptExplainPrompt, questionAnswerPrompt } = prompts;
 
 const geminiApiKey = process.env.GEMINI_API_KEY;
-const genAI = new GoogleGenAI({ apiKey: geminiApiKey });
+const geminiModel = process.env.GEMINI_MODEL || "gemini-3.5-flash-lite";
+const genAI = geminiApiKey ? new GoogleGenAI({ apiKey: geminiApiKey }) : null;
 
 const getGeminiErrorDetails = (error) => {
-  const rawMessage =
-    error?.message || error?.toString?.() || "Unknown Gemini error";
-  const text = String(rawMessage);
+  const text = String(
+    error?.message || error?.toString?.() || "Unknown Gemini error",
+  );
+  const providerStatus = Number(error?.status || error?.statusCode);
 
   if (
-    /quota|resource_exhausted|429|rate limit|exceeded your current quota/i.test(
-      text,
-    )
+    providerStatus === 429 ||
+    /quota|resource_exhausted|429|rate.?limit|exceeded.*quota/i.test(text)
   ) {
     return {
       status: 429,
-      message:
-        "Gemini API quota has been exhausted. Please add billing or use a project with available quota.",
-      details: text,
+      code: "AI_LIMIT_EXCEEDED",
+      message: "AI request limit reached. Please try again later.",
     };
   }
 
   if (
-    /api key|invalid api|unauthenticated|authentication|forbidden/i.test(text)
+    /missing_api_key|api key|invalid api|unauthenticated|authentication|forbidden/i.test(
+      text,
+    )
   ) {
     return {
-      status: 401,
-      message: "Gemini API authentication failed. Please check the API key.",
-      details: text,
+      status: 503,
+      code: "AI_CONFIGURATION_ERROR",
+      message:
+        "AI service is not configured correctly. Please contact support.",
     };
   }
 
   if (/model|bad request|invalid request|not found/i.test(text)) {
     return {
-      status: 400,
+      status: 502,
+      code: "AI_PROVIDER_ERROR",
       message:
-        "The Gemini request was invalid. Please check the selected model or payload.",
-      details: text,
+        "The AI service could not process this request. Please try again later.",
+    };
+  }
+
+  if (providerStatus === 401 || providerStatus === 403) {
+    return {
+      status: 503,
+      code: "AI_CONFIGURATION_ERROR",
+      message:
+        "AI service is not configured correctly. Please contact support.",
     };
   }
 
   return {
     status: 500,
-    message: "Failed to generate the questions from Gemini.",
-    details: text,
+    code: "AI_GENERATION_FAILED",
+    message: "Unable to generate a response right now. Please try again later.",
   };
+};
+
+const sendAIError = (res, error) => {
+  const aiError = getGeminiErrorDetails(error);
+  console.error("AI request failed:", error);
+  return res.status(aiError.status).json({
+    message: aiError.message,
+    code: aiError.code,
+  });
 };
 
 const parseGeminiJson = (responseText) => {
@@ -74,8 +95,14 @@ const generateWithGemini = async (
   prompt,
   systemInstruction = "You are an expert interview assistant. Respond in JSON format only.",
 ) => {
+  if (!genAI) {
+    const error = new Error("Missing API key");
+    error.code = "MISSING_API_KEY";
+    throw error;
+  }
+
   const response = await genAI.models.generateContent({
-    model: "gemini-2.0-flash",
+    model: geminiModel,
     contents: [{ role: "user", parts: [{ text: prompt }] }],
     config: {
       systemInstruction: systemInstruction,
@@ -133,8 +160,16 @@ const generateInterviewQuestion = async (req, res) => {
   try {
     const { role, experience, topicsToFocus, numberOfQuestions } = req.body;
 
-    if (!role || !experience || !topicsToFocus || !numberOfQuestions) {
-      return res.status(400).json({ message: "Misssing required filds" });
+    if (
+      !role ||
+      !experience ||
+      !topicsToFocus ||
+      !Number.isInteger(Number(numberOfQuestions)) ||
+      Number(numberOfQuestions) < 1
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Please provide all required interview details." });
     }
 
     const prompt = questionAnswerPrompt(
@@ -151,11 +186,7 @@ const generateInterviewQuestion = async (req, res) => {
 
     res.status(200).json(data);
   } catch (error) {
-    const aiError = getGeminiErrorDetails(error);
-    return res.status(aiError.status).json({
-      message: aiError.message,
-      error: aiError.details,
-    });
+    return sendAIError(res, error);
   }
 };
 
@@ -168,7 +199,9 @@ const generateConceptExplanation = async (req, res) => {
     const { question } = req.body;
 
     if (!question) {
-      return res.status(400).json({ message: "Misssing required filds" });
+      return res
+        .status(400)
+        .json({ message: "Please provide an interview question." });
     }
 
     const prompt = conceptExplainPrompt(question);
@@ -179,11 +212,7 @@ const generateConceptExplanation = async (req, res) => {
 
     res.status(200).json(data);
   } catch (error) {
-    const aiError = getGeminiErrorDetails(error);
-    return res.status(aiError.status).json({
-      message: aiError.message,
-      error: aiError.details,
-    });
+    return sendAIError(res, error);
   }
 };
 
@@ -232,11 +261,7 @@ const generateResumeBasedQuestions = async (req, res) => {
       keywords,
     });
   } catch (error) {
-    const aiError = getGeminiErrorDetails(error);
-    return res.status(aiError.status).json({
-      message: aiError.message,
-      error: aiError.details,
-    });
+    return sendAIError(res, error);
   }
 };
 
