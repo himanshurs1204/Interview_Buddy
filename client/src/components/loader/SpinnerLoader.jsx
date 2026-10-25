@@ -1,14 +1,13 @@
-import React from 'react';
-
-const SpinnerLoader = ({ size = '16px', color = '#0891B2' }) => {
+const SpinnerLoader = ({ size = '16px', color = 'currentColor' }) => {
   return (
     <div
-      className="inline-block animate-spin rounded-full border-2"
+      className="inline-block shrink-0 animate-spin rounded-full border-2 border-current border-t-transparent"
+      role="status"
+      aria-label="Loading"
       style={{
         width: size,
         height: size,
-        borderColor: `${color}`,
-        borderTopColor: 'transparent',
+        color,
       }}
     />
   );

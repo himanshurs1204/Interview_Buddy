@@ -204,8 +204,9 @@ const CreateSessionForm = () => {
                     type='submit'
                     className='btn-primary w-full mt-2'
                     disabled={isLoading}
+                    aria-busy={isLoading}
                 >
-                    {isLoading && <SpinnerLoader />} Create Session
+                    {isLoading ? <><SpinnerLoader /> Creating session...</> : 'Create Session'}
                 </button>
             </form>
         </div>

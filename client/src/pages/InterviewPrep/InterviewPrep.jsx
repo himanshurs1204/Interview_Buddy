@@ -175,8 +175,9 @@ const Interviewprep = () => {
                         <button
                           className='flex items-center gap-3 text-sm text-white font-medium bg-black px-5 py-2 mr-2 rounded text-nowrap cursor-pointer'
                           disabled={isLoading || isUpdateLoader}
+                          aria-busy={isUpdateLoader}
                           onClick={uploadMoreQuestions}>
-                          {isUpdateLoader ? (<SpinnerLoader />) : (<LuListCollapse className='text-lg' />)} {" "} Load More
+                          {isUpdateLoader ? <><SpinnerLoader /> Generating...</> : <><LuListCollapse className='text-lg' /> Load More</>}
                         </button>
                       </div>
                     )}
