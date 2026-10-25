@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap'); 
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme{
     --font-display: "Urbanist", sans-serifl;
@@ -15,7 +16,82 @@
 
 body{
     background-color: #fcfbfc;
+    color: #1f2937;
     overflow-x: hidden;
+}
+
+body,
+body *:not([class*="transition-transform"]) {
+    transition: background-color 220ms ease, color 220ms ease, border-color 220ms ease;
+}
+
+.dark body {
+    background-color: #0d1218;
+    color: #e5e7eb;
+}
+
+.dark .landing-surface {
+    background-color: #111820;
+}
+
+.dark [class~="bg-white"],
+.dark [class*="bg-white/"] {
+    background-color: #151d26;
+}
+
+.dark [class*="bg-gray-50"],
+.dark [class*="bg-gray-100"],
+.dark [class*="bg-slate-50"] {
+    background-color: #1c2732;
+}
+
+.dark [class*="text-black"],
+.dark [class*="text-gray-900"],
+.dark [class*="text-gray-800"],
+.dark [class*="text-gray-700"],
+.dark [class*="text-slate-800"],
+.dark [class*="text-slate-700"] {
+    color: #e5e7eb;
+}
+
+.dark [class*="text-gray-600"],
+.dark [class*="text-gray-500"],
+.dark [class*="text-gray-400"],
+.dark [class*="text-slate-600"],
+.dark [class*="text-slate-500"],
+.dark [class*="text-slate-400"] {
+    color: #aab6c4;
+}
+
+.dark [class*="border-gray-"],
+.dark [class*="border-slate-"] {
+    border-color: #34414e;
+}
+
+.dark .input-box {
+    color: #e5e7eb;
+    background-color: #18212a;
+    border-color: #34414e;
+}
+
+.dark .input-box input,
+.dark .input-box textarea,
+.dark .input-box select {
+    color: #e5e7eb;
+    background-color: transparent;
+}
+
+.dark .landing-surface [class*="bg-[#FFFEF8]"] {
+    background-color: #18212a;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body,
+    body * {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
 }
 
 /* couston scrollbar styling */
@@ -45,6 +121,33 @@ body{
 
     .animate-text-shine{
         animation: text-shine 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes skeleton-shimmer {
+        100% { transform: translateX(100%); }
+    }
+
+    .skeleton-shimmer {
+        position: relative;
+        overflow: hidden;
+        background-color: #e8edf1;
+    }
+
+    .skeleton-shimmer::after {
+        position: absolute;
+        inset: 0;
+        content: "";
+        transform: translateX(-100%);
+        background: linear-gradient(90deg, transparent, rgb(255 255 255 / 65%), transparent);
+        animation: skeleton-shimmer 1.5s ease-in-out infinite;
+    }
+
+    .dark .skeleton-shimmer {
+        background-color: #263440;
+    }
+
+    .dark .skeleton-shimmer::after {
+        background: linear-gradient(90deg, transparent, rgb(255 255 255 / 8%), transparent);
     }
 
     @keyframes blob1{

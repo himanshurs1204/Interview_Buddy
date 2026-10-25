@@ -2,54 +2,30 @@ import React from 'react'
 
 const SkeletonLoader = () => {
   return (
-    <>
-      <div role="status" class="animate-pulse space-y-4 max-w-3x1">
-        <div class="h-6 bg-gray-200 rounded-md dark:bg-gray-300 w-1/2"></div>
-        <div class="space-y-2">
-          <div class="h-3bg-gray-200 rounded dark:bg-gray-200 w-full"></div>
-          <div class="h-3bg-gray-200 rounded dark:bg-gray-200 w-11/12"></div>
-          <div class="h-3bg-gray-200 rounded dark:bg-gray-200 w-10/12"></div>
-          <div class="h-3hg-gray-200 rounded dark:bg-gray-200 w-9/12"></div>
-        </div>
-
-        <div class="bg-gray-100 dark:bg-gray-200 rounded p-4 space-y-2">
-          <div class="h-2.5 bg-gray-300 rounded w-3/4"></div>
-          <div class="h-2.5 bg-gray-300 rounded w-2/3"></div>
-          <div class="h-2.5bg-gray-300 rounded w-1/2"></div>
-        </div>
-      </div>
-      <div role="status" class="animate-pulse space-y-4 max-w-3xl mt-10">
-        <div class="h-4 bg-gray-200 rounded-md dark:bg-gray-200 w-1/2"></div>
-
-        <div class="space-y-2">
-          <div class="h-3 bg-gray-200 rounded dark:bg-gray-200 w-full"></div>
-          <div class="h-3bg-gray-200 rounded dark:bg-gray-200 w-11/12"></div>
-          <div class="h-3bg-gray-200 rounded dark:bg-gray-200 w-10/12"></div>
-          <div class="h-3bg-gray-200 rounded dark:bg-gray-200 w-9/12"></div>
-        </div>
-
-        <div class="space-y-2">
-          <div class="h-3 bg-gray-200 rounded dark:bg-gray-200 w-full"></div>
-          <div class="h-3 bg-gray-200 rounded dark:bg-gray-200 w-11/12"></div>
-          <div class="h-3 bg-gray-200 rounded dark:bg-gray-200 w-10/12"></div>
-          <div class="h-3 bg-gray-200 rounded dark:bg-gray-200 w-9/12"></div>
-        </div>
-
-        <div class="bg-gray-100 dark:bg-gray-200 rounded p-4 space-y-2">
-          <div class="h-2.5 bg-gray-300 rounded w-3/4"></div>
-          <div class="h-2.5 bg-gray-300 rounded w-2/3"></div>
+    <div role="status" aria-label="Preparing your explanation" className="space-y-6">
+      <p className="flex items-center gap-2 text-sm font-medium text-gray-500">
+        <span className="h-2 w-2 animate-pulse rounded-full bg-orange-500" />
+        Preparing your explanation
+      </p>
+      {[0, 1].map((section) => (
+        <div key={section} className="space-y-3">
+          <div className="skeleton-shimmer h-5 w-2/5 rounded" />
+          <div className="space-y-2.5">
+            <div className="skeleton-shimmer h-3 w-full rounded" />
+            <div className="skeleton-shimmer h-3 w-11/12 rounded" />
+            <div className="skeleton-shimmer h-3 w-10/12 rounded" />
+            <div className="skeleton-shimmer h-3 w-3/4 rounded" />
           </div>
-
-          <div class="h-4 bg-gray-200 rounded-md dark:bg-gray-200 w-1/2 mt-8"></div>
-
-          <div class="space-y-2">
-            <div class="h-3 bg-gray-200 rounded dark:bg-gray-200 w-full"></div>
-            <div class="h-3 bg-gray-200 rounded dark:bg-gray-200 w-11/12"></div>
-            <div class="h-3 bg-gray-200 rounded dark:bg-gray-200 w-10/12"></div>
-            <div class="h-3 bg-gray-200 rounded dark:bg-gray-200 w-9/12"></div>+
-            </div>xx
-      </div>
-    </>
+          {section === 0 && (
+            <div className="rounded-md border border-gray-200 p-4 dark:border-gray-700">
+              <div className="skeleton-shimmer h-3 w-4/5 rounded" />
+              <div className="skeleton-shimmer mt-2 h-3 w-3/5 rounded" />
+            </div>
+          )}
+        </div>
+      ))}
+      <span className="sr-only">Loading</span>
+    </div>
   )
 }
 

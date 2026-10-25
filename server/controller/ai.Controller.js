@@ -1,26 +1,156 @@
-// Example: Using Groq /responses endpoint with OpenAI SDK
-export const groqSampleResponse = async (req, res) => {
-  try {
-    const response = await client.responses.create({
-      model: "openai/gpt-oss-120b",
-      input: "Tell me a three sentence bedtime story about a unicorn.",
-    });
-    res.status(200).json({ output: response.output_text });
-  } catch (error) {
-    res.status(500).json({
-      message: "Failed to get Groq sample response",
-      error: error.message,
-    });
-  }
-};
-import OpenAI from "openai";
-import prompts from "../utils/prompts.js";
+const fs = require("fs");
+const pdfParse = require("pdf-parse");
+const mammoth = require("mammoth");
+const { GoogleGenAI } = require("@google/genai");
+const prompts = require("../utils/prompts.js");
+const {
+  extractKeywordsFromText,
+  buildResumeQuestionPrompt,
+} = require("../utils/resumeUtils.js");
 const { conceptExplainPrompt, questionAnswerPrompt } = prompts;
 
-const client = new OpenAI({
-  apiKey: process.env.GROQ_API_KEY,
-  baseURL: "https://api.groq.com/openai/v1",
-});
+const geminiApiKey = process.env.GEMINI_API_KEY;
+const geminiModel = process.env.GEMINI_MODEL || "gemini-3.5-flash-lite";
+const genAI = geminiApiKey ? new GoogleGenAI({ apiKey: geminiApiKey }) : null;
+
+const getGeminiErrorDetails = (error) => {
+  const text = String(
+    error?.message || error?.toString?.() || "Unknown Gemini error",
+  );
+  const providerStatus = Number(error?.status || error?.statusCode);
+
+  if (
+    providerStatus === 429 ||
+    /quota|resource_exhausted|429|rate.?limit|exceeded.*quota/i.test(text)
+  ) {
+    return {
+      status: 429,
+      code: "AI_LIMIT_EXCEEDED",
+      message: "AI request limit reached. Please try again later.",
+    };
+  }
+
+  if (
+    /missing_api_key|api key|invalid api|unauthenticated|authentication|forbidden/i.test(
+      text,
+    )
+  ) {
+    return {
+      status: 503,
+      code: "AI_CONFIGURATION_ERROR",
+      message:
+        "AI service is not configured correctly. Please contact support.",
+    };
+  }
+
+  if (/model|bad request|invalid request|not found/i.test(text)) {
+    return {
+      status: 502,
+      code: "AI_PROVIDER_ERROR",
+      message:
+        "The AI service could not process this request. Please try again later.",
+    };
+  }
+
+  if (providerStatus === 401 || providerStatus === 403) {
+    return {
+      status: 503,
+      code: "AI_CONFIGURATION_ERROR",
+      message:
+        "AI service is not configured correctly. Please contact support.",
+    };
+  }
+
+  return {
+    status: 500,
+    code: "AI_GENERATION_FAILED",
+    message: "Unable to generate a response right now. Please try again later.",
+  };
+};
+
+const sendAIError = (res, error) => {
+  const aiError = getGeminiErrorDetails(error);
+  console.error("AI request failed:", error);
+  return res.status(aiError.status).json({
+    message: aiError.message,
+    code: aiError.code,
+  });
+};
+
+const parseGeminiJson = (responseText) => {
+  if (!responseText) {
+    throw new Error("Empty response from Gemini");
+  }
+
+  const cleanText = String(responseText)
+    .replace(/^```json\s*/i, "")
+    .replace(/^```\s*/i, "")
+    .replace(/```$/i, "")
+    .trim();
+
+  return JSON.parse(cleanText);
+};
+
+const generateWithGemini = async (
+  prompt,
+  systemInstruction = "You are an expert interview assistant. Respond in JSON format only.",
+) => {
+  if (!genAI) {
+    const error = new Error("Missing API key");
+    error.code = "MISSING_API_KEY";
+    throw error;
+  }
+
+  const response = await genAI.models.generateContent({
+    model: geminiModel,
+    contents: [{ role: "user", parts: [{ text: prompt }] }],
+    config: {
+      systemInstruction: systemInstruction,
+    },
+  });
+
+  const text =
+    response?.text ||
+    response?.candidates?.[0]?.content?.parts
+      ?.map((part) => part.text)
+      .join("") ||
+    "";
+  return parseGeminiJson(text);
+};
+
+const extractResumeText = async (resumeFile, resumeText) => {
+  if (resumeText && String(resumeText).trim()) {
+    return resumeText;
+  }
+
+  if (!resumeFile) {
+    throw new Error("Resume file is required");
+  }
+
+  const fileBuffer = resumeFile.buffer || fs.readFileSync(resumeFile.path);
+  const filename = (resumeFile.originalname || "").toLowerCase();
+  const mimetype = resumeFile.mimetype || "";
+
+  if (mimetype === "application/pdf" || filename.endsWith(".pdf")) {
+    const parsedPdf = await pdfParse(fileBuffer);
+    return parsedPdf.text || "";
+  }
+
+  if (
+    mimetype.includes("word") ||
+    filename.endsWith(".docx") ||
+    filename.endsWith(".doc")
+  ) {
+    if (filename.endsWith(".docx") || mimetype.includes("officedocument")) {
+      const result = await mammoth.extractRawText({ buffer: fileBuffer });
+      return result.value || "";
+    }
+
+    return fileBuffer.toString("utf8").replace(/\0/g, " ");
+  }
+
+  return fileBuffer.toString("utf8");
+};
 
 // @description   Genrate Interview question and answers using Gemini
 // @route          POST  /api/ai/generate-question
@@ -30,8 +160,16 @@ const generateInterviewQuestion = async (req, res) => {
   try {
     const { role, experience, topicsToFocus, numberOfQuestions } = req.body;
 
-    if (!role || !experience || !topicsToFocus || !numberOfQuestions) {
-      return res.status(400).json({ message: "Misssing required filds" });
+    if (
+      !role ||
+      !experience ||
+      !topicsToFocus ||
+      !Number.isInteger(Number(numberOfQuestions)) ||
+      Number(numberOfQuestions) < 1
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Please provide all required interview details." });
     }
 
     const prompt = questionAnswerPrompt(
@@ -40,35 +178,15 @@ const generateInterviewQuestion = async (req, res) => {
       topicsToFocus,
       numberOfQuestions,
     );
-    const response = await client.chat.completions.create({
-      model: "mixtral-8x7b-32768",
-      messages: [
-        {
-          role: "system",
-          content:
-            "You are an expert interview question generator. Respond in JSON format only.",
-        },
-        { role: "user", content: prompt },
-      ],
-    });
 
-    let rawText = response.choices[0].message.content;
-
-    // clean it: ```json and ``` from beginning and end
-    const cleanText = rawText
-      .replace(/^```json\s*/, "") // Remove starting ```json
-      .replace(/```$/, "") // remove ending ```
-      .trim(); // remove extra space
-
-    // Now safe to parse
-    const data = JSON.parse(cleanText);
+    const data = await generateWithGemini(
+      prompt,
+      "You are an expert interview question generator. Respond in JSON format only.",
+    );
 
     res.status(200).json(data);
   } catch (error) {
-    res.status(500).json({
-      message: "Failed to generate the questions",
-      error: error.message,
-    });
+    return sendAIError(res, error);
   }
 };
 
@@ -81,40 +199,74 @@ const generateConceptExplanation = async (req, res) => {
     const { question } = req.body;
 
     if (!question) {
-      return res.status(400).json({ message: "Misssing required filds" });
+      return res
+        .status(400)
+        .json({ message: "Please provide an interview question." });
     }
 
     const prompt = conceptExplainPrompt(question);
-    const response = await client.chat.completions.create({
-      model: "mixtral-8x7b-32768",
-      messages: [
-        {
-          role: "system",
-          content:
-            "You are an expert interview concept explainer. Respond in JSON format only.",
-        },
-        { role: "user", content: prompt },
-      ],
-    });
-
-    let rawText = response.choices[0].message.content;
-
-    // clean it: ```json and ``` from beginning and end
-    const cleanText = rawText
-      .replace(/^```json\s*/, "") // Remove starting ```json
-      .replace(/```$/, "") // remove ending ```
-      .trim(); // remove extra space
-
-    // Now safe to parse
-    const data = JSON.parse(cleanText);
+    const data = await generateWithGemini(
+      prompt,
+      "You are an expert interview concept explainer. Respond in JSON format only.",
+    );
 
     res.status(200).json(data);
   } catch (error) {
-    res.status(500).json({
-      message: "Failed to genrate the questions",
-      error: error.message,
-    });
+    return sendAIError(res, error);
   }
 };
 
-export { generateConceptExplanation, generateInterviewQuestion };
+const generateResumeBasedQuestions = async (req, res) => {
+  try {
+    const {
+      role,
+      experience,
+      topicsToFocus,
+      description,
+      resumeText,
+      numberOfQuestions,
+    } = req.body;
+    const resumeFile = req.file;
+
+    if (!resumeFile && !resumeText) {
+      return res
+        .status(400)
+        .json({ message: "Please upload a resume or provide resume text." });
+    }
+
+    const extractedText = await extractResumeText(resumeFile, resumeText);
+    const keywords = extractKeywordsFromText(extractedText);
+
+    const prompt = buildResumeQuestionPrompt({
+      keywords: keywords.length
+        ? keywords
+        : topicsToFocus
+          ? topicsToFocus
+              .split(",")
+              .map((item) => item.trim())
+              .filter(Boolean)
+          : [],
+      role: role || "Resume-based candidate",
+      experience: experience || "relevant experience",
+      numberOfQuestions: Number(numberOfQuestions) || 10,
+    });
+
+    const data = await generateWithGemini(
+      prompt,
+      "You are an expert interview question generator. Respond in JSON format only.",
+    );
+
+    res.status(200).json({
+      ...data,
+      keywords,
+    });
+  } catch (error) {
+    return sendAIError(res, error);
+  }
+};
+
+module.exports = {
+  generateConceptExplanation,
+  generateInterviewQuestion,
+  generateResumeBasedQuestions,
+};

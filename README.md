@@ -17,12 +17,14 @@
 
 ## 📸 Preview
 
-### 🔐 Login Page  
+### 🔐 Login Page
+
 ![Login Page](screenshots/login.jpg)
 
 ---
 
-### 🧠 Dashboard with Generated Questions  
+### 🧠 Dashboard with Generated Questions
+
 ![Dashboard](screenshots/Dashboard.jpg)
 
 ---
@@ -50,6 +52,7 @@ This project is built using the MERN stack:
 
 - ![Node.js](https://img.shields.io/badge/-Node.js-339933?logo=node.js&logoColor=white&style=for-the-badge)  
   **Node.js** – Runtime Environment 🟩
+
 ---
 
 ## 📂 Project Structure
@@ -72,7 +75,7 @@ InterviewBuddy/
 
 ### 🔧 Prerequisites
 
-- 📦 Node.js (v16+ recommended)  
+- 📦 Node.js (v16+ recommended)
 - 🛢️ MongoDB (local or cloud via Atlas)
 
 ### 📝 1. Clone the repository
@@ -89,6 +92,9 @@ Create a `.env` file in the `server/` directory with the following:
 ```
 MONGO_URI=your_mongo_connection_string
 JWT_SECRET=your_jwt_secret_key
+GEMINI_API_KEY=your_gemini_api_key
+# Optional; defaults to gemini-3.5-flash-lite
+GEMINI_MODEL=gemini-3.5-flash-lite
 ```
 
 ### 📥 3. Install Dependencies
@@ -125,12 +131,13 @@ The app will run at: `http://localhost:5173`
 
 ## 💡 Core Highlights
 
-✨ Built with the modern MERN stack:  
-- ⚛️ **React.js** for a fast, interactive UI  
-- ⚙️ **Express.js** + 🟩 **Node.js** for scalable backend APIs  
-- 🟢 **MongoDB** for reliable data storage  
+✨ Built with the modern MERN stack:
 
-🔁 Modular structure and clean architecture make the project easily extensible.  
+- ⚛️ **React.js** for a fast, interactive UI
+- ⚙️ **Express.js** + 🟩 **Node.js** for scalable backend APIs
+- 🟢 **MongoDB** for reliable data storage
+
+🔁 Modular structure and clean architecture make the project easily extensible.
 
 ---
 
@@ -144,4 +151,5 @@ The app will run at: `http://localhost:5173`
 
 💡 Have suggestions or improvements?  
 Feel free to fork the project and submit pull requests. Contributions are always welcome!
+
 ---
